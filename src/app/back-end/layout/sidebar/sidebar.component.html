@@ -1,5 +1,5 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-   <!-- Brand Logo -->
+  <!-- Brand Logo -->
   <a routerLink="/dashboard" class="brand-link text-center">
     <span class="brand-text font-weight-bold">
       <img src="assets/images/prospecta_newlogo.png" width="100" class="me-2" />
@@ -28,7 +28,12 @@
       >
         <!-- Dashboard -->
         <li class="nav-item">
-          <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link">
+          <a
+            routerLink="/admin/dashboard"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-link"
+          >
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>Dashboard</p>
           </a>
@@ -36,7 +41,7 @@
 
         <!-- Employee Menu -->
         <li class="nav-item has-treeview">
-          <a href="#" class="nav-link">
+          <a class="nav-link">
             <i class="nav-icon fas fa-users"></i>
             <p>
               Employees
@@ -58,7 +63,7 @@
 
             <!-- Nested Level 2 -->
             <li class="nav-item has-treeview">
-              <a href="#" class="nav-link">
+              <a class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>
                   Settings
@@ -69,14 +74,14 @@
               <!-- Level 3 -->
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="#" class="nav-link">
+                  <a class="nav-link">
                     <i class="far fa-dot-circle nav-icon"></i>
                     <p>Roles</p>
                   </a>
                 </li>
 
                 <li class="nav-item">
-                  <a href="#" class="nav-link">
+                  <a class="nav-link">
                     <i class="far fa-dot-circle nav-icon"></i>
                     <p>Permissions</p>
                   </a>
@@ -86,9 +91,77 @@
           </ul>
         </li>
 
+        <!-- Configurations Menu -->
+        <li class="nav-item has-treeview">
+          <a class="nav-link">
+            <i class="nav-icon fas fa-users"></i>
+            <p>
+              Configurations
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a
+                routerLink="/admin/form-fields/list"
+                routerLinkActive="active"
+                class="nav-link"
+              >
+                <i class="far fa-circle nav-icon"></i>
+                <p>Dynamic Form Field</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Configurations Menu -->
+        <li class="nav-item has-treeview">
+          <a class="nav-link">
+            <i class="nav-icon fas fa-users"></i>
+            <p>
+              MyInfo
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a
+                routerLink="/admin/myInfo/personal-details"
+                routerLinkActive="active"
+                class="nav-link"
+              >
+                <i class="far fa-circle nav-icon"></i>
+                <p>Personal Details</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                routerLink="/admin/myInfo/contact-details"
+                routerLinkActive="active"
+                class="nav-link"
+              >
+                <i class="far fa-circle nav-icon"></i>
+                <p>Contact Details</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                routerLink="/admin/myInfo/job-details"
+                routerLinkActive="active"
+                class="nav-link"
+              >
+                <i class="far fa-circle nav-icon"></i>
+                <p>Job Details</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
         <!-- Reports -->
         <li class="nav-item has-treeview">
-          <a href="#" class="nav-link">
+          <a class="nav-link">
             <i class="nav-icon fas fa-chart-bar"></i>
             <p>
               Reports
@@ -98,7 +171,7 @@
 
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Sales Report</p>
               </a>

@@ -1,0 +1,51 @@
+<div class="card">
+  <div class="card-header">
+    <h5>Dynamic Form Fields</h5>
+  </div>
+
+  <div class="card-body">
+    <div
+      *ngIf="isMessage === true"
+      class="alert alert-info alert-dismissible fade show"
+      role="alert"
+    >
+      {{ message }}
+    </div>
+
+    <div class="mb-3 d-flex justify-content-end">
+      <button class="btn btn-success me-2" (click)="addFieldBtn()">
+        <i class="bi bi-plus-circle"></i> Add Field
+      </button>
+    </div>
+
+    <table
+      id="formFieldsTable"
+      class="table table-striped table-hover table-bordered"
+    >
+      <thead class="table-dark">
+        <tr>
+          <th>Sno</th>
+          <th>Plugin Name</th>
+          <th>Feature Name</th>
+          <th>Control ID</th>
+          <th>Control Name</th>
+          <th>Label</th>
+          <th>Field Name</th>
+          <th>Is Mandatory</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let field of formFields; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ field.pluginName }}</td>
+          <td>{{ field.featureName }}</td>
+          <td>{{ field.control_id }}</td>
+          <td>{{ field.controlName }}</td>
+          <td>{{ field.label_name }}</td>
+          <td>{{ field.field_name }}</td>
+          <td>{{ field.is_mandatory }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -66,6 +66,10 @@ export class EmployeeComponent {
     });
   }
 
+  handleAdd() {
+    this.router.navigate(['admin/employees/add']);
+  }
+
   showMessage(msg: string) {
     this.message = msg;
     this.isMessage = true;

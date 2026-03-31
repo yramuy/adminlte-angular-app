@@ -19,10 +19,16 @@ import { WebsiteFooterComponent } from './front-end/pages/website-footer/website
 import { HeaderComponent } from './back-end/layout/header/header.component';
 import { SidebarComponent } from './back-end/layout/sidebar/sidebar.component';
 import { DashboardComponent } from './back-end/pages/dashboard/dashboard.component';
-import { EmployeeComponent } from './back-end/pages/employee/employee.component';
 import { MainLayoutComponent } from './back-end/layout/main-layout/main-layout.component';
 import { CommonModule } from '@angular/common';
 import { LoginComponent } from './back-end/pages/login/login.component';
+import { EmployeeComponent } from './back-end/pages/employees/employee/employee.component';
+import { AddemployeeComponent } from './back-end/pages/employees/addemployee/addemployee.component';
+import { DynamicFormFieldsComponent } from './back-end/pages/configurations/dynamic-form-fields/dynamic-form-fields.component';
+import { AddFieldComponent } from './back-end/pages/configurations/add-field/add-field.component';
+import { PersonalDetailsComponent } from './back-end/pages/myInfo/personal-details/personal-details.component';
+import { ContactDetailsComponent } from './back-end/pages/myInfo/contact-details/contact-details.component';
+import { JobDetailsComponent } from './back-end/pages/myInfo/job-details/job-details.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +45,13 @@ import { LoginComponent } from './back-end/pages/login/login.component';
     BlogComponent,
     WebsiteLayoutComponent,
     WebsiteHeaderComponent,
-    WebsiteFooterComponent
+    WebsiteFooterComponent,
+    AddemployeeComponent,
+    DynamicFormFieldsComponent,
+    AddFieldComponent,
+    PersonalDetailsComponent,
+    ContactDetailsComponent,
+    JobDetailsComponent
   ],
   imports: [
     BrowserModule,

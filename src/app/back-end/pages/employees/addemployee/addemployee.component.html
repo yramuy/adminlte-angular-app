@@ -1,0 +1,53 @@
+<div class="card">
+  <div class="card-header">
+    <h5>Add Employee</h5>
+  </div>
+  <form #empForm="ngForm" (ngSubmit)="saveEmployee(empForm)">
+    <div class="card-body">
+      <div *ngIf="isMessage === true" class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+
+
+      <div class="row mb-3">
+
+        <div class="col-6 mb-3" *ngFor="let field of formFields">
+
+          <div *ngIf="field.is_display == '1'">
+
+            <label class="form-label">
+              {{ field.label_name }}
+              <span *ngIf="field.is_mandatory == '1'" class="text-danger">*</span>
+            </label>
+
+            <input *ngIf="field.control_id == '1'" 
+            type="text" class="form-control"
+              [(ngModel)]="formData[field.field_name]" 
+              [name]="field.field_name" 
+              [required]="field.is_mandatory == '1'"
+              [readonly]="field.is_enable == '0'" 
+              [style.background]="field.is_enable == '0' ? 'lightgrey' : ''" />
+
+            <!-- Error -->
+            <div class="text-danger mt-1" *ngIf="empForm.controls[field.field_name]?.invalid 
+                    && empForm.controls[field.field_name]?.touched">
+              <small *ngIf="empForm.controls[field.field_name]?.errors?.['required']">
+                {{ field.label_name }} is required
+              </small>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-primary mr-3">Save</button>
+      <button class="btn btn-dark" (click)="handleBackBtn()">Back</button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,98 @@
+<div class="card">
+    <div class="card-header">
+        <h5>Add Field</h5>
+    </div>
+    <form #fieldForm="ngForm" (ngSubmit)="saveField(fieldForm)">
+        <div class="card-body">
+
+            <div *ngIf="isMessage === true" class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{message}}
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-6 mb-3" *ngFor="let field of fields">
+
+                    <!-- Control ID 1 is Textbox -->
+                    <div *ngIf="field.is_display == '1' && field.control_id == '1'">
+                        <label class="form-label">{{field.label_name}}</label>
+                        <span *ngIf="field.is_mandatory == '1'" class="text-danger"> *</span>
+                        <input [type]="field.id !=18 ? 'text' : 'number'"
+                                class="form-control"
+                                [(ngModel)]="formData[field.field_name]"
+                                [name]="field.field_name"
+                                [min]="field.id == 18 ? 1 : null"
+                                [required]="field.is_mandatory == '1'"
+                                [readonly]="field.is_enable == '0'" 
+                                [style.background]="field.is_enable == '0' ? 'lightgrey' : ''" />
+                        <!-- Error -->
+                        <div class="text-danger mt-1" 
+                        *ngIf="fieldForm.controls[field.field_name]?.invalid 
+                                && fieldForm.controls[field.field_name]?.touched">
+                        <small *ngIf="fieldForm.controls[field.field_name]?.errors?.['required']">
+                            {{ field.label_name }} is required
+                        </small>
+                        </div>
+                    </div>
+
+                    <!-- Control ID 2 is Dropdown -->
+                    <div *ngIf="field.is_display == '1' && field.control_id == '2'">
+                        <label class="form-label">{{field.label_name}}</label>
+                        <span *ngIf="field.is_mandatory == '1'" class="text-danger"> *</span>
+
+                                <select #mySelect
+                                    class="form-control"
+                                    [(ngModel)]="formData[field.field_name]"
+                                    [name]="field.field_name"
+                                    [required]="field.is_mandatory == '1'"
+                                    [disabled]="field.is_enable == '0'"
+                                    [style.background]="field.is_enable == '0' ? 'lightgrey' : ''"
+                                    (change)="field.id == '8' ? handleDependance(mySelect.value) : null">
+
+                                    <option value="" disabled selected>--Select--</option>
+
+                                    <option *ngFor="let entity of (field.id == '9' ? featureMaster : field.entity_data)" 
+                                        [value]="entity.id">{{entity.name}}
+                                    </option>
+
+                                </select>
+                        <!-- Error -->
+                        <div class="text-danger mt-1" 
+                        *ngIf="fieldForm.controls[field.field_name]?.invalid 
+                                && fieldForm.controls[field.field_name]?.touched">
+                        <small *ngIf="fieldForm.controls[field.field_name]?.errors?.['required']">
+                            {{ field.label_name }} is required
+                        </small>
+                        </div>
+                    </div>
+
+                    <!-- Control ID 6 is Checkbox -->
+                    <div *ngIf="field.is_display == '1' && field.control_id == '6'" class="form-check d-flex align-items-center">
+                        
+                        <input type="checkbox" 
+                                class="form-control small-checkbox me-2 mr-2"
+                                [(ngModel)]="formData[field.field_name]"
+                                [name]="field.field_name"
+                                [required]="field.is_mandatory == '1'"
+                                />
+                        <label class="form-check-label mr-1">{{field.label_name}}</label>
+                        <span *ngIf="field.is_mandatory == '1'" class="text-danger"> *</span>
+                        <!-- Error -->
+                        <div class="text-danger mt-1" 
+                        *ngIf="fieldForm.controls[field.field_name]?.invalid 
+                                && fieldForm.controls[field.field_name]?.touched">
+                        <small *ngIf="fieldForm.controls[field.field_name]?.errors?.['required']">
+                            {{ field.label_name }} is required
+                        </small>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-success mr-3">Save</button>
+            <button class="btn btn-dark">Back</button>
+        </div>
+    </form>
+</div>
