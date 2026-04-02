@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { LoaderService } from 'src/app/services/loader.service';
 
 @Component({
   selector: 'app-employee',
@@ -17,6 +18,7 @@ export class EmployeeComponent {
     private apiService: ApiService,
     private authService: AuthService,
     private router: Router,
+    public loader: LoaderService
   ) {}
 
   ngOnInit() {
@@ -38,9 +40,13 @@ export class EmployeeComponent {
   }
 
   loadEmployees(): void {
+    this.loader.show();
+
     this.apiService.request('GET', '/employees').subscribe({
       next: (res: any) => {
         this.employees = res.employees || [];
+
+        this.loader.hide();
 
         setTimeout(() => {
           this.initializeDataTable();
@@ -60,6 +66,8 @@ export class EmployeeComponent {
         } else {
           this.showMessage('Something went wrong. Please try again later');
         }
+
+        this.loader.hide();
 
         console.error('Failed to load employees', err);
       },

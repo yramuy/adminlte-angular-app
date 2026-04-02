@@ -21,7 +21,7 @@ import { JobDetailsComponent } from './back-end/pages/myInfo/job-details/job-det
 
 const routes: Routes = [
 
-  // 🔐 ADMIN LOGIN (NO LAYOUT)
+  // ADMIN LOGIN (NO LAYOUT)
   {
     path: 'admin/login',
     component: LoginComponent,
@@ -40,6 +40,7 @@ const routes: Routes = [
 
       { path: 'form-fields/list', component: DynamicFormFieldsComponent },
       { path: 'form-fields/add', component: AddFieldComponent },
+      { path: 'form-fields/add/:id', component: AddFieldComponent },
 
       { path: 'myInfo/personal-details', component: PersonalDetailsComponent },
       { path: 'myInfo/contact-details', component: ContactDetailsComponent },

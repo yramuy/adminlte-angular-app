@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { LoaderService } from 'src/app/services/loader.service';
 
 @Component({
   selector: 'app-dynamic-form-fields',
@@ -17,6 +18,7 @@ export class DynamicFormFieldsComponent {
     private apiService: ApiService,
     private router: Router,
     private authService: AuthService,
+    public loader: LoaderService,
   ) {}
 
   ngOnInit() {
@@ -33,17 +35,20 @@ export class DynamicFormFieldsComponent {
         this.isMessage = false;
       }, 3000);
     }
-    
+
     this.loadDynamicFormFields();
   }
 
   loadDynamicFormFields() {
+    this.loader.show();
     this.apiService.request('GET', '/allDynamicFormFields').subscribe({
       next: (res: any) => {
         this.formFields = res.formFields || [];
+        this.loader.hide();
         setTimeout(() => {
           this.initializeDataTable();
         }, 0);
+
         console.log('Form Field', this.formFields);
       },
       error: (err) => {
@@ -57,23 +62,42 @@ export class DynamicFormFieldsComponent {
         } else {
           this.showMessage('Something went wrong. Please try again later');
         }
+        this.loader.hide();
       },
     });
   }
 
   initializeDataTable() {
-    if ($.fn.DataTable.isDataTable('#formFieldsTable')) {
-      $('#formFieldsTable').DataTable().destroy();
-    }
-
-    $('#formFieldsTable').DataTable({
-      dom: 'Bfrtip',
-      buttons: ['excelHtml5', 'pdfHtml5'],
-    });
+    $('#formFieldsTable').DataTable();
   }
 
   addFieldBtn() {
     this.router.navigate(['/admin/form-fields/add']);
+  }
+
+  handleEdit(id: string) {
+    // alert(id);
+    this.router.navigate(['/admin/form-fields/add', id]);
+  }
+
+  confirmDelete(id: string) {
+    if (confirm('Are you sure you want to delete this record?')) {
+      this.deleteField(id);
+    }
+  }
+
+  deleteField(id: string) {
+    console.log('Delete ', id);
+    this.apiService.request('DELETE', `/deleteformFieldById/${id}`).subscribe({
+      next: (res: any) => {
+        console.log(res.message);
+        this.showMessage(res.message);
+        this.loadDynamicFormFields(); // refresh list
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
   }
 
   showMessage(msg: string) {

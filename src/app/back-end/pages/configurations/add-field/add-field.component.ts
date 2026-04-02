@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { LoaderService } from 'src/app/services/loader.service';
 
 @Component({
   selector: 'app-add-field',
@@ -15,18 +16,75 @@ export class AddFieldComponent {
   message: string = '';
   formData: any = {};
   featureMaster: any[] = [];
+  fieldId: any = '0';
+  fieldData: any = {};
 
   constructor(
     private apiService: ApiService,
     private authService: AuthService,
     private router: Router,
+    public loader: LoaderService,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit() {
+    this.fieldId = this.route.snapshot.paramMap.get('id')
+      ? this.route.snapshot.paramMap.get('id')
+      : '0';
+    // ✅ always set field_id
+    this.formData.field_id = this.fieldId;
+
     this.loadFormFields();
+
+    if (this.fieldId != '0') {
+      this.loadFormFieldData();
+    }
+  }
+
+  loadFormFieldData() {
+    this.loader.show();
+    this.apiService
+      .request('GET', `/formFieldDataById/${this.fieldId}`)
+      .subscribe({
+        next: (res: any) => {
+          const data = res.fieldData[0] || {};
+          this.fieldData = data;
+
+          // ✅ convert checkbox values
+          Object.keys(data).forEach((key) => {
+            if (data[key] == '1') {
+              data[key] = true;
+            } else if (data[key] == '0') {
+              data[key] = false;
+            }
+          });
+
+          this.formData = {
+            ...data,
+            field_id: data.id || this.fieldId, // ✅ ensure always present
+          };
+          this.handleDependance(this.fieldData['plugin_id']);
+          this.loader.hide();
+
+          console.log('Field data: ', this.fieldData);
+        },
+        error: (err) => {
+          if (err.status === 401) {
+            this.showMessage('Token expired');
+            this.authService.setLoginStatus(false);
+          } else if (err.status === 400) {
+            this.showMessage('Invalid request data');
+          } else if (err.status === 500) {
+            this.showMessage('Server error. Please try again later');
+          } else {
+            this.showMessage('Something went wrong. Please try again later');
+          }
+        },
+      });
   }
 
   loadFormFields() {
+    this.loader.show();
     let payload = JSON.stringify({
       plugin_id: '3',
       feature_id: '880',
@@ -34,6 +92,7 @@ export class AddFieldComponent {
     this.apiService.request('POST', '/dynamicFormFields', payload).subscribe({
       next: (res: any) => {
         this.fields = res.formFields || [];
+        this.loader.hide();
         console.log('Fields', res.formFields);
       },
       error: (err) => {
@@ -47,8 +106,14 @@ export class AddFieldComponent {
         } else {
           this.showMessage('Something went wrong. Please try again later');
         }
+
+        this.loader.hide();
       },
     });
+  }
+
+  handleBack() {
+    this.router.navigate(['/admin/form-fields/list']);
   }
 
   handleDependance(value: any) {
@@ -110,7 +175,7 @@ export class AddFieldComponent {
         },
       });
 
-    console.log('Form Fields', this.formData);
+    console.log('Save Payload', this.formData);
   }
 
   showMessage(msg: string) {
