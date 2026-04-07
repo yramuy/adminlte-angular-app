@@ -1,0 +1,7 @@
+.nav-treeview {
+  display: none;
+}
+
+.nav-item.menu-open > .nav-treeview {
+  display: block;
+}

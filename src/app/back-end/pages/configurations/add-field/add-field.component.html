@@ -72,14 +72,14 @@
               [disabled]="field.is_enable == '0'"
               [style.background]="field.is_enable == '0' ? 'lightgrey' : ''"
               (change)="
-                field.id == '8' ? handleDependance(mySelect.value) : null
+                field.id == '8' || field.id == '9' ? handleDependance(mySelect.value) : null
               "
             >
               <option value="" disabled selected>--Select--</option>
 
               <option
                 *ngFor="
-                  let entity of field.id == '9'
+                  let entity of field.id == '9' || field.id == '50'
                     ? featureMaster
                     : field.entity_data
                 "

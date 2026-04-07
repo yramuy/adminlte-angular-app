@@ -86,8 +86,9 @@ export class AddFieldComponent {
   loadFormFields() {
     this.loader.show();
     let payload = JSON.stringify({
-      plugin_id: '3',
-      feature_id: '880',
+      plugin_id: '4',
+      feature_id: '22',
+      screen_id: '24'
     });
     this.apiService.request('POST', '/dynamicFormFields', payload).subscribe({
       next: (res: any) => {
