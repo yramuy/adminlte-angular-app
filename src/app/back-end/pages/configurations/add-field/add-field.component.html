@@ -71,19 +71,14 @@
               [required]="field.is_mandatory == '1'"
               [disabled]="field.is_enable == '0'"
               [style.background]="field.is_enable == '0' ? 'lightgrey' : ''"
-              (change)="
-                field.id == '8' || field.id == '9' ? handleDependance(mySelect.value) : null
-              "
+              (change)="onDropdownChange(field.field_name, mySelect.value)"
             >
-              <option value="" disabled selected>--Select--</option>
+              <option value="">--Select--</option>
 
               <option
                 *ngFor="
-                  let entity of field.id == '9' || field.id == '50'
-                    ? featureMaster
-                    : field.entity_data
-                "
-                [value]="entity.id"
+                  let entity of field.entity_data"
+                [ngValue]="entity.id"
               >
                 {{ entity.name }}
               </option>

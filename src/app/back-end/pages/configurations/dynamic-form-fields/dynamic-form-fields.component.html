@@ -16,11 +16,11 @@
       {{ message }}
     </div>
 
-    <div class="mb-3 d-flex justify-content-end">
+    <!-- <div class="mb-3 d-flex justify-content-end">
       <button class="btn btn-success me-2" (click)="addFieldBtn()">
         <i class="bi bi-plus-circle"></i> Add Field
       </button>
-    </div>
+    </div> -->
 
     <table
       id="formFieldsTable"
@@ -29,8 +29,9 @@
       <thead class="table-dark">
         <tr>
           <th>Sno</th>
-          <th>Plugin Name</th>
-          <th>Feature Name</th>
+          <th>Plugin</th>
+          <th>Feature</th>
+          <th>Screen</th>
           <th>Control ID</th>
           <th>Control Name</th>
           <th>Label</th>
@@ -45,6 +46,7 @@
           <td>{{ i + 1 }}</td>
           <td>{{ field.pluginName }}</td>
           <td>{{ field.featureName }}</td>
+          <td>{{ field.screenName }}</td>
           <td>{{ field.control_id }}</td>
           <td>{{ field.controlName }}</td>
           <td>{{ field.label_name }}</td>
@@ -53,7 +55,7 @@
           <td>{{ field.order_by }}</td>
           <td>
             <div class="d-flex">
-              <button class="btn btn-success mr-2" (click)="handleEdit(field.id)">
+              <button class="btn btn-success mr-2" (click)="handleEdit(field.id, field)">
                 <i class="bi bi-pencil"></i>
               </button>
               <button class="btn btn-danger" (click)="confirmDelete(field.id)">

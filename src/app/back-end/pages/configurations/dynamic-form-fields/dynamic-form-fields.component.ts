@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoaderService } from 'src/app/services/loader.service';
+import { MenuContextService } from 'src/app/services/menu-context.service';
 
 @Component({
   selector: 'app-dynamic-form-fields',
@@ -19,7 +20,8 @@ export class DynamicFormFieldsComponent {
     private router: Router,
     private authService: AuthService,
     public loader: LoaderService,
-  ) {}
+    private menuContextService: MenuContextService
+  ) { }
 
   ngOnInit() {
     const state = history.state;
@@ -41,7 +43,7 @@ export class DynamicFormFieldsComponent {
 
   loadDynamicFormFields() {
     this.loader.show();
-    this.apiService.request('GET', '/allDynamicFormFields').subscribe({
+    this.apiService.request('GET', '/formFieldsList').subscribe({
       next: (res: any) => {
         this.formFields = res.formFields || [];
         this.loader.hide();
@@ -71,11 +73,14 @@ export class DynamicFormFieldsComponent {
     $('#formFieldsTable').DataTable();
   }
 
-  addFieldBtn() {
-    this.router.navigate(['/admin/form-fields/add']);
-  }
+  handleEdit(id: string, field: any) {
 
-  handleEdit(id: string) {
+    // ✅ store plugin, feature, screen
+    // this.menuContextService.setContext({
+    //   plugin_id: field.plugin_id,
+    //   feature_id: field.feature_id,
+    //   screen_id: field.screen_id
+    // });
     // alert(id);
     this.router.navigate(['/admin/form-fields/add', id]);
   }

@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoaderService } from 'src/app/services/loader.service';
+import { MenuContextService } from 'src/app/services/menu-context.service';
+import { MenuService } from 'src/app/services/menu.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -20,8 +22,10 @@ export class SidebarComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private apiService: ApiService,
-    public loader: LoaderService
-  ) {}
+    public loader: LoaderService,
+    private menuService: MenuService,
+    private menuContextService: MenuContextService
+  ) { }
 
   ngOnInit() {
     this.authService.loadUserFromStorage();
@@ -66,7 +70,7 @@ export class SidebarComponent implements OnInit {
     });
   }
 
-    showMessage(msg: string) {
+  showMessage(msg: string) {
     this.message = msg;
     this.isMessage = true;
 
@@ -77,10 +81,17 @@ export class SidebarComponent implements OnInit {
 
   // ✅ TOGGLE MENU
   toggleMenu(menu: any, event: Event) {
-    event.preventDefault();
-    event.stopPropagation();
 
-    if (menu.children && menu.children.length > 0) {
+    // ✅ store plugin, feature, screen
+    this.menuContextService.setContext({
+      plugin_id: menu.super_parent_id,
+      feature_id: menu.parent_id,
+      screen_id: menu.id
+    });
+
+    // existing logic
+    if (menu.children?.length) {
+      event.preventDefault();
       menu.isOpen = !menu.isOpen;
     }
   }
@@ -89,7 +100,7 @@ export class SidebarComponent implements OnInit {
   getRoute(menu: any): any[] | null {
     if (!menu.menu_url) return null;
 
-    return ['/admin/'+menu.menu_url];
+    return ['/admin/' + menu.menu_url];
   }
 
   // ✅ ACTIVE MENU

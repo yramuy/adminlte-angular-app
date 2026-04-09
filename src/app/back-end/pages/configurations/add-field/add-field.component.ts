@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { LoaderService } from 'src/app/services/loader.service';
+import { MenuContextService } from 'src/app/services/menu-context.service';
+import { MenuService } from 'src/app/services/menu.service';
 
 @Component({
   selector: 'app-add-field',
@@ -18,6 +20,7 @@ export class AddFieldComponent {
   featureMaster: any[] = [];
   fieldId: any = '0';
   fieldData: any = {};
+  menuID: any = "";
 
   constructor(
     private apiService: ApiService,
@@ -25,23 +28,29 @@ export class AddFieldComponent {
     private router: Router,
     public loader: LoaderService,
     private route: ActivatedRoute,
-  ) {}
+    private menuService: MenuService,
+    private menuContextService: MenuContextService
+  ) { }
 
   ngOnInit() {
+    this.loadNewFormFields();
+    
+    this.menuID = this.menuService.getMenuId();
+
     this.fieldId = this.route.snapshot.paramMap.get('id')
       ? this.route.snapshot.paramMap.get('id')
       : '0';
     // ✅ always set field_id
     this.formData.field_id = this.fieldId;
 
-    this.loadFormFields();
-
     if (this.fieldId != '0') {
-      this.loadFormFieldData();
+      this.loadEditFormFields();
     }
+
+    
   }
 
-  loadFormFieldData() {
+  loadEditFormFields() {
     this.loader.show();
     this.apiService
       .request('GET', `/formFieldDataById/${this.fieldId}`)
@@ -63,7 +72,8 @@ export class AddFieldComponent {
             ...data,
             field_id: data.id || this.fieldId, // ✅ ensure always present
           };
-          this.handleDependance(this.fieldData['plugin_id']);
+          this.loadFeatures(this.fieldData['plugin_id']);
+          this.loadScreens(this.fieldData['feature_id']);
           this.loader.hide();
 
           console.log('Field data: ', this.fieldData);
@@ -83,13 +93,19 @@ export class AddFieldComponent {
       });
   }
 
-  loadFormFields() {
+  loadNewFormFields() {
+
+    const ctx = this.menuContextService.getContext();
     this.loader.show();
-    let payload = JSON.stringify({
+
+    let payload = {
       plugin_id: '4',
       feature_id: '22',
       screen_id: '24'
-    });
+    };
+
+    console.log('Payload : ',payload);
+
     this.apiService.request('POST', '/dynamicFormFields', payload).subscribe({
       next: (res: any) => {
         this.fields = res.formFields || [];
@@ -117,31 +133,54 @@ export class AddFieldComponent {
     this.router.navigate(['/admin/form-fields/list']);
   }
 
-  handleDependance(value: any) {
-    // alert(value);
-    let payload = JSON.stringify({
-      plugin_id: value,
-    });
-    this.apiService.request('POST', '/dependance_master', payload).subscribe({
-      next: (res: any) => {
-        this.featureMaster = res.dependanceMaster || [];
-        console.log('Fields', res.dependanceMaster);
-      },
-      error: (err) => {
-        if (err.status === 401) {
-          this.showMessage('Token expired');
-          this.authService.setLoginStatus(false);
-        } else if (err.status === 400) {
-          this.showMessage('Invalid request data');
-        } else if (err.status === 400) {
-          this.showMessage('Request not dound');
-        } else if (err.status === 500) {
-          this.showMessage('Server error. Please try again later');
-        } else {
-          this.showMessage('Something went wrong. Please try again later');
-        }
-      },
-    });
+  onDropdownChange(fieldName: string, value: any) {
+    if (fieldName === 'plugin_id') {
+      this.formData.feature_id = null;
+      this.formData.screen_id = null;
+
+      this.loadFeatures(value);
+    }
+
+    if (fieldName === 'feature_id') {
+      this.formData.screen_id = null;
+
+      this.loadScreens(value);
+    }
+  }
+
+  // ✅ Load Features
+  loadFeatures(pluginId: any) {
+    const payload = JSON.stringify({ parent_id: pluginId });
+
+    this.apiService.request('POST', '/dependance_master', payload)
+      .subscribe((res: any) => {
+
+        const featureList = res.dependanceMaster || [];
+
+        this.fields.forEach(field => {
+          if (field.field_name === 'feature_id') {
+            field.entity_data = featureList;
+          }
+        });
+        
+      });
+  }
+
+  // ✅ Load Screens
+  loadScreens(featureId: any) {
+    const payload = JSON.stringify({ parent_id: featureId });
+
+    this.apiService.request('POST', '/dependance_master', payload)
+      .subscribe((res: any) => {
+
+        const screenList = res.dependanceMaster || [];
+
+        this.fields.forEach(field => {
+          if (field.field_name === 'screen_id') {
+            field.entity_data = screenList;
+          }
+        });
+      });
   }
 
   saveField(form: NgForm) {

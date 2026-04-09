@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { MenuContextService } from 'src/app/services/menu-context.service';
 
 @Component({
   selector: 'app-addemployee',
@@ -19,6 +20,7 @@ export class AddemployeeComponent {
     private apiService: ApiService,
     private authService: AuthService,
     private router: Router,
+    private menuContextService: MenuContextService
   ) {}
 
   ngOnInit() {
@@ -26,12 +28,15 @@ export class AddemployeeComponent {
   }
 
   loadDynamicFormFields() {
-    const body = JSON.stringify({
-      plugin_id: '3',
-      feature_id: '4',
-    });
+    const ctx = this.menuContextService.getContext();
 
-    this.apiService.request('POST', '/dynamicFormFields', body).subscribe({
+    let payload = {
+      plugin_id: ctx.plugin_id,
+      feature_id: ctx.feature_id,
+      screen_id: ctx.screen_id
+    };
+
+    this.apiService.request('POST', '/dynamicFormFields', payload).subscribe({
       next: (res: any) => {
         this.formFields = res.formFields || [];
         this.loadControlValue();
